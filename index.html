@@ -153,7 +153,38 @@
     .subtitle {
       color: var(--text-muted);
       font-size: 14px;
-      margin-bottom: 24px;
+      margin-bottom: 16px;
+    }
+
+    /* Khung điều chỉnh tốc độ */
+    .speed-control-box {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: #f8fafc;
+      padding: 10px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      margin-bottom: 20px;
+      width: fit-content;
+    }
+
+    .speed-control-box label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .speed-control-box input[type="range"] {
+      cursor: pointer;
+      accent-color: var(--primary);
+    }
+
+    .speed-value {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--primary);
+      min-width: 36px;
     }
 
     /* Question & Answer Box */
@@ -213,13 +244,6 @@
       background: var(--primary-hover);
     }
 
-    .action-row {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-
     .controls {
       display: flex;
       justify-content: space-between;
@@ -240,7 +264,6 @@
       line-height: 1.5;
     }
 
-    /* Responsive cho Mobile */
     @media (max-width: 768px) {
       .app-container {
         grid-template-columns: 1fr;
@@ -281,6 +304,13 @@
         <h1>English Listening Practice</h1>
         <p class="subtitle">Luyện nghe và phản xạ tiếng Anh mỗi ngày.</p>
 
+        <!-- THANH ĐIỀU CHỈNH TỐC ĐỘ ĐỌC -->
+        <div class="speed-control-box">
+          <label for="speedRange">⚡ Tốc độ nói:</label>
+          <input type="range" id="speedRange" min="0.5" max="1.2" step="0.1" value="0.7" oninput="updateSpeedLabel(this.value)">
+          <span class="speed-value" id="speedValue">0.7x</span>
+        </div>
+
         <!-- Khung Câu hỏi -->
         <section class="card-box">
           <h2>Câu hỏi</h2>
@@ -318,14 +348,13 @@
 
         <!-- Mẹo học tập -->
         <div class="tip">
-          💡 <strong>Mẹo:</strong> 1. Nghe câu hỏi trước → 2. Thử hiểu không cần đọc → 3. Mở đáp án và luyện nói theo.
+          💡 <strong>Mẹo:</strong> Nếu nghe chưa quen, hãy hạ tốc độ xuống <strong>0.6x - 0.7x</strong>. Khi đã quen tai, hãy tăng dần lên <strong>1.0x</strong> (tốc độ tự nhiên).
         </div>
       </div>
     </main>
   </div>
 
   <script>
-    // Giữ nguyên mảng câu hỏi của bạn
     const questions = [
       {
         question: "What is your favorite subject?",
@@ -505,17 +534,19 @@
       document.getElementById("question").textContent = item.question;
       document.getElementById("answer").textContent = item.answer;
       
-      // Cập nhật text tiến trình
       document.getElementById("progressText").textContent = (currentIndex + 1) + "/" + questions.length;
       
-      // Cập nhật thanh tiến trình thanh ngang (progress bar fill)
       const percent = ((currentIndex + 1) / questions.length) * 100;
       document.getElementById("progressBarFill").style.width = percent + "%";
 
-      // Ẩn đáp án khi chuyển câu mới
       document.getElementById("answerBox").classList.add("hidden");
       
       renderQuestionList();
+    }
+
+    // Hiển thị tốc độ đang chọn lên màn hình
+    function updateSpeedLabel(val) {
+      document.getElementById("speedValue").textContent = val + "x";
     }
 
     function speakText(elementId) {
@@ -530,7 +561,10 @@
       const utterance = new SpeechSynthesisUtterance(text);
 
       utterance.lang = "en-US";
-      utterance.rate = 0.85; // Tốc độ vừa phải cho luyện nghe
+
+      // ĐỌC TỐC ĐỘ TỪ THANH TRUỢT
+      const selectedSpeed = parseFloat(document.getElementById("speedRange").value);
+      utterance.rate = selectedSpeed; 
       utterance.pitch = 1;
 
       const voices = window.speechSynthesis.getVoices();
@@ -556,7 +590,6 @@
       window.speechSynthesis.cancel();
       displayQuestion();
       
-      // Cuộn danh sách câu hỏi theo câu đang active trên sidebar
       const activeBtn = document.querySelector(".question-item.active");
       if(activeBtn) {
         activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -584,7 +617,6 @@
       });
     }
 
-    // Khởi chạy lần đầu
     displayQuestion();
   </script>
 </body>

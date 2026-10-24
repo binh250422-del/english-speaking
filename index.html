@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>English Listening - Professional Study Space</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary: #ff6b35;
+      --primary-hover: #e85a24;
+      --bg-main: #fcfbf9;
+      --surface: #ffffff;
+      --text-main: #2d3748;
+      --text-muted: #718096;
+      --border: #edf2f7;
+      --accent-bg: #fffaf5;
+      --radius: 16px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-main);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .app-container {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 24px;
+      max-width: 1100px;
+      width: 100%;
+      background: var(--surface);
+      border-radius: 24px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      min-height: 650px;
+    }
+
+    /* Sidebar Danh sách câu hỏi */
+    .sidebar {
+      background: #faf8f5;
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      padding: 24px;
+    }
+
+    .sidebar h3 {
+      font-size: 16px;
+      color: var(--text-main);
+      margin-bottom: 16px;
+      font-weight: 600;
+    }
+
+    .question-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      overflow-y: auto;
+      max-height: 540px;
+      padding-right: 4px;
+    }
+
+    .question-item {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid transparent;
+      border-radius: 12px;
+      background: white;
+      color: var(--text-main);
+      text-align: left;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    }
+
+    .question-item:hover {
+      background: #fff0ea;
+      border-color: #ffd8cc;
+    }
+
+    .question-item.active {
+      background: var(--primary);
+      color: white;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+    }
+
+    /* Main Content Area */
+    .main-content {
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .tag {
+      background: #fff0ea;
+      color: var(--primary);
+      font-weight: 700;
+      font-size: 11px;
+      letter-spacing: 1.2px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      text-transform: uppercase;
+    }
+
+    .progress-bar-container {
+      width: 120px;
+      height: 6px;
+      background: var(--border);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--primary);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    h1 {
+      font-size: 24px;
+      color: var(--text-main);
+      margin-bottom: 4px;
+      font-weight: 700;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 14px;
+      margin-bottom: 24px;
+    }
+
+    /* Question & Answer Box */
+    .card-box {
+      background: var(--accent-bg);
+      border: 1px solid #fae1d5;
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 16px;
+    }
+
+    .card-box h2 {
+      font-size: 12px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--primary);
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+
+    .english-text {
+      font-size: 18px;
+      line-height: 1.6;
+      color: var(--text-main);
+      font-weight: 500;
+      margin-bottom: 16px;
+    }
+
+    /* Buttons Style */
+    button {
+      border: none;
+      border-radius: 12px;
+      padding: 12px 20px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .btn-secondary {
+      background: #edf2f7;
+      color: var(--text-main);
+    }
+
+    .btn-secondary:hover {
+      background: #e2e8f0;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      box-shadow: 0 4px 12px rgba(255, 107, 53, 0.2);
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+    }
+
+    .action-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .tip {
+      font-size: 12px;
+      color: var(--text-muted);
+      background: #f7fafc;
+      padding: 12px 16px;
+      border-radius: 10px;
+      margin-top: 20px;
+      line-height: 1.5;
+    }
+
+    /* Responsive cho Mobile */
+    @media (max-width: 768px) {
+      .app-container {
+        grid-template-columns: 1fr;
+        height: auto;
+      }
+      .sidebar {
+        max-height: 250px;
+      }
+      .main-content {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="app-container">
+    <!-- CỘT TRÁI: DANH SÁCH CÂU HỎI -->
+    <aside class="sidebar">
+      <h3>📚 Danh sách câu hỏi</h3>
+      <div id="questionList" class="question-list"></div>
+    </aside>
+
+    <!-- CỘT PHẢI: KHÔNG GIAN HỌC TẬP -->
+    <main class="main-content">
+      <div>
+        <div class="header-top">
+          <span class="tag">Study Space</span>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span id="progressText" style="font-size: 13px; color: var(--text-muted); font-weight: 600;">1/50</span>
+            <div class="progress-bar-container">
+              <div class="progress-bar-fill" id="progressBarFill"></div>
+            </div>
+          </div>
+        </div>
+
+        <h1>English Listening Practice</h1>
+        <p class="subtitle">Luyện nghe và phản xạ tiếng Anh mỗi ngày.</p>
+
+        <!-- Khung Câu hỏi -->
+        <section class="card-box">
+          <h2>Câu hỏi</h2>
+          <p class="english-text" id="question">Đang tải...</p>
+          <button class="btn-primary" onclick="speakText('question')">
+            🔊 Nghe câu hỏi
+          </button>
+        </section>
+
+        <!-- Nút bật/tắt đáp án -->
+        <button class="btn-secondary" onclick="toggleAnswer()" style="width: 100%; margin-bottom: 16px;">
+          👁 Hiển thị / Ẩn đáp án
+        </button>
+
+        <!-- Khung Đáp án -->
+        <section class="card-box hidden" id="answerBox">
+          <h2>Đáp án gợi ý</h2>
+          <p class="english-text" id="answer">Đang tải...</p>
+          <button class="btn-primary" onclick="speakText('answer')">
+            🔊 Nghe đáp án
+          </button>
+        </section>
+      </div>
+
+      <div>
+        <!-- Điều hướng Previous / Next -->
+        <div class="controls">
+          <button class="btn-secondary" onclick="changeQuestion(-1)">
+            ← Câu trước
+          </button>
+          <button class="btn-primary" onclick="changeQuestion(1)">
+            Câu tiếp theo →
+          </button>
+        </div>
+
+        <!-- Mẹo học tập -->
+        <div class="tip">
+          💡 <strong>Mẹo:</strong> 1. Nghe câu hỏi trước → 2. Thử hiểu không cần đọc → 3. Mở đáp án và luyện nói theo.
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // Giữ nguyên mảng câu hỏi của bạn
+    const questions = [
+      {
+        question: "What is your favorite subject?",
+        answer: "My favorite subject is English. I enjoy learning it because it helps me communicate with people from different countries. It is also useful for my future studies and career."
+      },
+      {
+        question: "Do you prefer studying alone or with others?",
+        answer: "I prefer studying with others because we can share ideas and help each other with difficult questions. Studying with friends is also more interesting and motivating."
+      },
+      {
+        question: "Do you prefer online learning or traditional learning?",
+        answer: "I prefer online learning because it is convenient and flexible. I can study at home and choose a suitable time. It also saves me time travelling to school."
+      },
+      {
+        question: "What do you usually do in your free time?",
+        answer: "In my free time, I usually listen to music, watch films or meet my friends. Sometimes, I go to a café and have a drink with them. These activities help me relax after a busy day."
+      },
+      {
+        question: "Do you prefer spending free time alone or with others? Why?",
+        answer: "I prefer spending my free time with my friends. We can talk about our daily lives, have some fun and share our experiences. It helps me reduce stress and maintain good relationships."
+      },
+      {
+        question: "How do you think free-time activities benefit mental health?",
+        answer: "Free-time activities can help people relax and reduce stress. For example, listening to music or exercising can improve our mood. They also give us a chance to take a break from work or study."
+      },
+      {
+        question: "Do you like playing sports? Why or why not?",
+        answer: "Yes, I do. I usually play badminton because it is fun and easy to play with my friends. It helps me stay fit, reduce stress and feel more energetic"
+      },
+      {
+        question: "What sports are popular in your country?",
+        answer: "Football is probably the most popular sport in Vietnam. Many people enjoy watching football matches with their friends and families. Besides football, badminton and swimming are also popular."
+      },
+      {
+        question: "Do you prefer watching sports or playing sports? Why?",
+        answer: "I prefer playing sports because I can exercise while having fun. I usually play badminton with my friends on the weekend. It is a good way to stay healthy and spend quality time together."
+      },
+      {
+        question: "Can you tell me about your family?",
+        answer: "There are four people in my family: my parents, my siblings and me. We are quite close to each other and often have meals together. We usually support each other when we have problems."
+      },
+      {
+        question: "What activities do you usually do with your family?",
+        answer: "We usually have meals, watch TV and go out together. On weekends, we sometimes visit relatives or go to a restaurant. I really enjoy these activities because they help us spend quality time together."
+      },
+      {
+        question: "Do you prefer spending time with your family or friends? Why?",
+        answer: "I prefer spending time with my family because I feel comfortable and relaxed when I am with them. We can talk about our daily lives and share our problems. However, I also enjoy meeting my friends when I have free time."
+      },
+      {
+        question: "Do you like watching films? Why or why not?",
+        answer: "Yes, I do. Watching films is a great way to relax after studying or working. I can also learn new vocabulary and understand different cultures through films."
+      },
+      {
+        question: "What kinds of films do you like to watch?",
+        answer: "I really enjoy watching comedy and romantic films. They are entertaining and help me take my mind off stress. Sometimes, I also watch science-fiction films because I find them interesting."
+      },
+      {
+        question: "Do you often drink green tea?",
+        answer: "Yes, I sometimes drink green tea, especially after meals. I like its fresh and slightly bitter taste. I think it is also a healthier choice than many sugary drinks."
+      },
+      {
+        question: "What are the benefits of drinking green tea?",
+        answer: "Green tea has several health benefits. It contains antioxidants and may help people feel refreshed. Besides, drinking green tea can be a relaxing habit, especially after a busy day"
+      },
+      {
+        question: "Why do people enjoy eating out?",
+        answer: "I think people enjoy eating out because it is convenient and gives them a chance to try different kinds of food. They do not have to spend time cooking or cleaning. It is also a good way to spend time with family and friends."
+      },
+      {
+        question: "What are the advantages and disadvantages of eating out compared to home-cooked meals?",
+        answer: "Eating out is convenient because people do not have to cook or wash dishes. However, it can be more expensive and some food may contain too much oil or salt. Home-cooked meals are usually healthier and more affordable."
+      },
+      {
+        question: "Do you think people will eat out more often in the future? Why or why not?",
+        answer: "Yes, I think so. Modern people are often busy with work and study, so eating out can save them a lot of time. In addition, there are more restaurants and food delivery services nowadays, making it easier for people to find different kinds of food"
+      },
+      {
+        question: "What are the benefits of learning a new language?",
+        answer: "Learning a new language helps people communicate with others and understand different cultures. It can also improve job opportunities and support international travel. Personally, I think learning a language expands our horizon."
+      },
+      {
+        question: "Why do people learn English?",
+        answer: "People learn English for many reasons. It is widely used around the world, so it helps people communicate with foreigners. English is also important for education, travel and finding better job opportunities."
+      },
+      {
+        question: "What is the most difficult part of learning English?",
+        answer: "I think speaking is the most difficult part because learners need to respond quickly and use the language naturally. Pronunciation can also be challenging. However, regular practice can help people become more confident."
+      },
+      {
+        question: "Do you think any language will replace English in the future? Why or why not?",
+        answer: "I do not think so, at least not in the near future. English is already widely used in education, business, technology and international communication. Therefore, it will probably remain an important global language."
+      },
+      {
+        question: "Have you ever participated in a community activity in your local area?",
+        answer: "Yes, I have. I once joined a clean-up activity in my local area with some friends. We collected rubbish and cleaned a public place, and I felt happy because we did something useful for the community."
+      },
+      {
+        question: "What kinds of community activities are popular in your country?",
+        answer: "In Vietnam, charity events, environmental campaigns and clean-up activities are quite popular. Young people often donate clothes or food to people in need. These activities can help support the local community."
+      },
+      {
+        question: "Do you think volunteering is important? Why or why not?",
+        answer: "Yes, definitely. Volunteering allows people to help others and make a positive contribution to society. It also helps young people gain practical experience and develop useful social skills"
+      },
+      {
+        question: "Would you prefer to join a local charity event or an environmental campaign?",
+        answer: "I would prefer to join an environmental campaign. I am interested in protecting nature, so I would enjoy activities such as planting trees or collecting rubbish. I think small actions can make a positive difference to the environment"
+      },
+      {
+        question: "Do you follow any online blogs? Why or why not?",
+        answer: "Yes, I sometimes follow online blogs about travel and education. They provide useful information and personal experiences that I cannot always find in textbooks. I also enjoy reading them because they are convenient and easy to access"
+      },
+      {
+        question: "What do you think are the benefits and drawbacks of online learning?",
+        answer: "Online learning is convenient because students can study anywhere and save travelling time. It also gives them access to many useful resources. However, students may become distracted easily and have less direct interaction with teachers and classmates."
+      },
+      {
+        question: "Have you ever taken an online course? How was your experience?",
+        answer: "Yes, I have taken an online English course. It was quite convenient because I could study from home and review the lessons whenever I wanted. However, I sometimes found it difficult to stay focused during long lessons"
+      },
+      {
+        question: "Have you ever used public transportation? How was your experience?",
+        answer: "Yes, I have used buses several times. I think they are affordable and convenient, especially when travelling around a busy city. Sometimes they can be crowded, but overall, my experience was quite good"
+      },
+      {
+        question: "Did you collect anything when you were a child?",
+        answer: "Yes, I collected stickers when I was a child. I usually exchanged them with my classmates and tried to find new ones. It was a simple hobby, but I really enjoyed it."
+      },
+      {
+        question: "What do people in your country usually collect?",
+        answer: "People in Vietnam collect many different things, such as stamps, coins, books and postcards. Some people also collect souvenirs from their travels. I think collecting things is an interesting way to keep memories"
+      },
+      {
+        question: "Have you ever collected something expensive?",
+        answer: "No, I have not. I have only collected small and inexpensive things such as postcards and souvenirs. I think collecting expensive items can be interesting, but it may also be quite costly"
+      },
+      {
+        question: "Do you like fashion?",
+        answer: "Yes, I do, but I am not a fashion expert. I like wearing simple and comfortable clothes that suit my personality. I think fashion is a good way to express yourself."
+      },
+      {
+        question: "What kind of clothes do you usually wear?",
+        answer: "I usually wear casual clothes such as T-shirts, jeans and sneakers. They are comfortable and suitable for my daily activities. When I attend an important event, I prefer wearing something more formal."
+      },
+      {
+        question: "Do you think fashion is important? Why or why not?",
+        answer: "Yes, I think fashion is quite important because it can help people feel more confident. It also allows them to express their personality. However, I believe comfort and suitability are more important than following every trend"
+      },
+      {
+        question: "What do you usually do at a party?",
+        answer: "At a party, I usually talk with my friends, eat some food and listen to music. If there are fun activities, I may join them as well. I mainly enjoy chatting and spending quality time with others."
+      },
+      {
+        question: "Do you like going to parties? Why or why not?",
+        answer: "Yes, I do. Parties are a good opportunity to meet friends, relax and have fun. I especially enjoy small parties because they are more comfortable and I can have meaningful conversations with people."
+      },
+      {
+        question: "What do you usually wear to a party?",
+        answer: "It depends on the type of party. For a casual party, I usually wear a simple dress or jeans with a nice shirt. If it is a formal event, I choose something more elegant and professional."
+      },
+      {
+        question: "How often do you travel?",
+        answer: "I usually travel two or three times a year, depending on my schedule. I enjoy visiting new places because I can broaden my horizons and experience different cultures. Travelling also helps me relax after a busy period."
+      },
+      {
+        question: "What is your favorite place to visit? Why?",
+        answer: "My favorite places to visit are beaches because I love the fresh air and beautiful sea views. I enjoy walking along the beach, taking photos and watching the sunset. It is a great way to relax and recharge my batteries"
+      }
+    ];
+
+    let currentIndex = 0;
+
+    function displayQuestion() {
+      const item = questions[currentIndex];
+
+      document.getElementById("question").textContent = item.question;
+      document.getElementById("answer").textContent = item.answer;
+      
+      // Cập nhật text tiến trình
+      document.getElementById("progressText").textContent = (currentIndex + 1) + "/" + questions.length;
+      
+      // Cập nhật thanh tiến trình thanh ngang (progress bar fill)
+      const percent = ((currentIndex + 1) / questions.length) * 100;
+      document.getElementById("progressBarFill").style.width = percent + "%";
+
+      // Ẩn đáp án khi chuyển câu mới
+      document.getElementById("answerBox").classList.add("hidden");
+      
+      renderQuestionList();
+    }
+
+    function speakText(elementId) {
+      if (!("speechSynthesis" in window)) {
+        alert("Trình duyệt của bạn không hỗ trợ tính năng đọc văn bản.");
+        return;
+      }
+
+      window.speechSynthesis.cancel();
+
+      const text = document.getElementById(elementId).textContent;
+      const utterance = new SpeechSynthesisUtterance(text);
+
+      utterance.lang = "en-US";
+      utterance.rate = 0.85; // Tốc độ vừa phải cho luyện nghe
+      utterance.pitch = 1;
+
+      const voices = window.speechSynthesis.getVoices();
+      const englishVoice = voices.find(voice =>
+        voice.lang.toLowerCase().startsWith("en-us")
+      ) || voices.find(voice =>
+        voice.lang.toLowerCase().startsWith("en")
+      );
+
+      if (englishVoice) {
+        utterance.voice = englishVoice;
+      }
+
+      window.speechSynthesis.speak(utterance);
+    }
+
+    function toggleAnswer() {
+      document.getElementById("answerBox").classList.toggle("hidden");
+    }
+
+    function changeQuestion(direction) {
+      currentIndex = (currentIndex + direction + questions.length) % questions.length;
+      window.speechSynthesis.cancel();
+      displayQuestion();
+      
+      // Cuộn danh sách câu hỏi theo câu đang active trên sidebar
+      const activeBtn = document.querySelector(".question-item.active");
+      if(activeBtn) {
+        activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    }
+
+    function renderQuestionList() {
+      const list = document.getElementById("questionList");
+      if (!list) return;
+
+      list.innerHTML = "";
+
+      questions.forEach((item, index) => {
+        const button = document.createElement("button");
+        button.className = "question-item" + (index === currentIndex ? " active" : "");
+        button.textContent = `${index + 1}. ${item.question}`;
+
+        button.onclick = function () {
+          currentIndex = index;
+          displayQuestion();
+          window.speechSynthesis.cancel();
+        };
+
+        list.appendChild(button);
+      });
+    }
+
+    // Khởi chạy lần đầu
+    displayQuestion();
+  </script>
+</body>
+</html>
